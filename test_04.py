@@ -87,6 +87,7 @@ class SerialApp:
             self.calculate_a2()
             self.calculate_a3()
             self.calculate_a4()
+            self.calculate_CD()
             self.calculate_AB()
             self.display_results()
 
@@ -149,7 +150,7 @@ class SerialApp:
 
         # 合計値を self.a に格納
         self.a0 = (part1_sum + part2_sum) / 8
-        print(f"self.a: {self.a}")
+        print(f"self.a: {self.a0}")
 
     def calculate_a1(self):
         self.a1 = (5.3 - self.measure_d[2] - self.a0) / -7
@@ -158,10 +159,16 @@ class SerialApp:
         self.a2 = (5.3 - self.measure_d[0] - self.a0) / 7
 
     def calculate_a3(self):
-        self.a3 = (5.3 - self.measure_d[3] - self.a0) / 7
+        self.a3 = (0.3 - self.measure_d[3] - self.a0) / 7
 
     def calculate_a4(self):
-        self.a4 = (5.3 - self.measure_d[5] - self.a0) / -7
+        self.a4 = (0.3 - self.measure_d[5] - self.a0) / -7
+
+    def calculate_CD(self):
+        self.C1 = (self.a2 - self.a3) / 5.0
+        self.C2 = (self.a1 - self.a4) / 5.0
+        self.D1 = (self.a3) - self.C1 * 0.3
+        self.D2 = (self.a4) - self.C2 * 0.3
 
 
 
@@ -209,10 +216,8 @@ class SerialApp:
         # 結果をテキストボックスに追加
         result_text = (
             f"a0 = {self.a0}\n"
-            f"a1 = {self.a1}\n"
-            f"a2 = {self.a2}\n"
-            f"a3 = {self.a3}\n"
-            f"a4 = {self.a4}\n"
+            f"C1 = {self.C1}\nD1 = {self.D1}\n"
+            f"C2 = {self.C2}\nD2 = {self.D2}\n"
             f"A1 = {self.A1}\nB1 = {self.B1}\n"
             f"A2 = {self.A2}\nB2 = {self.B2}\n"
             f"A3 = {self.A3}\nB3 = {self.B3}\n"
