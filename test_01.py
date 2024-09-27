@@ -77,6 +77,10 @@ class SerialApp:
             self.measuring = False
             self.start_buttons[index].config(text=f"計測開始 {index + 1}")
 
+            self.calculate_a()
+            self.calculate_AB()
+            
+
     def measurement_loop(self):
         command = bytes([0x52, 0x01, 0x00, 0x53])  # 計測コマンド
         index = self.measuring_index
@@ -101,7 +105,7 @@ class SerialApp:
                     self.update_gui_s1(index, f"{self.measure_s1[index] - self.offset_s1[index]:04.1f}°")
                     self.update_gui_s2(index, f"{self.measure_s2[index] - self.offset_s2[index]:04.1f}°")
 
-                self.calculate_a()
+                # self.calculate_a()
             except Exception as e:
                 self.update_gui_d(index, f"エラー: {e}")
                 break
@@ -130,12 +134,51 @@ class SerialApp:
         self.master.destroy()
 
     def calculate_a(self):
-        part1_sum = sum(0.3 - self.measure_d[i] for i in [0, 1, 2, 6, 7, 8])
-        part2_sum = sum(5.3 - self.measure_d[i] for i in [3, 4, 5, 9, 10, 11])
+        part1_sum = sum(5.3 - self.measure_d[i] for i in [0, 1, 2, 6, 7, 8])
+        part2_sum = sum(0.3 - self.measure_d[i] for i in [3, 4, 5, 9, 10, 11])
 
         # 合計値を self.a に格納
         self.a = part1_sum + part2_sum
-        # print(f"self.a = {self.a}")
+        print(f"self.a: {self.a}")
+
+    def calculate_AB(self):
+        z1 = 0.3
+        z2 = 5.3
+        r = 7
+        if self.measure_s2[0] == 0 or self.measure_s2[3] == 0:
+            self.A1 = 0
+            self.B1 = 0
+        else:
+            self.A1 = r * (1 / (z2 - z1)) * (1 / self.measure_s2[0] - 1 / self.measure_s2[3])
+            self.B1 = r / self.measure_s2[3] - self.A1 * z1
+
+        if self.measure_s2[2] == 0 or self.measure_s2[5] == 0:
+            self.A2 = 0
+            self.B2 = 0
+        else:
+            self.A2 = -r * (1 / (z2 - z1)) * (1 / self.measure_s2[2] - 1 / self.measure_s2[5])
+            self.B2 = -r / self.measure_s2[5] - self.A2 * z1
+
+        if self.measure_s1[6] == 0 or self.measure_s1[9] == 0:
+            self.A3 = 0
+            self.B3 = 0
+        else:
+            self.A3 = -r * (1 / (z2 - z1)) * (1 / self.measure_s1[6] - 1 / self.measure_s1[9])
+            self.B3 = -r / self.measure_s1[9] - self.A3 * z1
+
+        if self.measure_s1[8] == 0 or self.measure_s1[11] == 0:
+            self.A4 = 0
+            self.B4 = 0
+        else:
+            self.A4 = r * (1 / (z2 - z1)) * (1 / self.measure_s1[8] - 1 / self.measure_s1[11])
+            self.B4 = r / self.measure_s1[11] - self.A4 * z1
+
+        print(f"self.A1: {self.A1}, self.B1: {self.B1}")
+        print(f"self.A2: {self.A2}, self.B2: {self.B2}")
+        print(f"self.A3: {self.A3}, self.B3: {self.B3}")
+        print(f"self.A4: {self.A4}, self.B4: {self.B4}")
+
+
 
 
 def main():
