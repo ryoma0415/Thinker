@@ -7,6 +7,7 @@ import threading
 import serial.tools.list_ports
 import math
 
+max_angle = 3.5
 
 class SerialApp:
     def __init__(self, master):
@@ -181,14 +182,26 @@ class SerialApp:
 
                     if self.calibration:
                         if self.fixed_s1 >= 0:
-                            self.fixed_s1 = self.fixed_s1 * self.cal_yaw_p
+                            if max_angle == 7.0:
+                                self.fixed_s1 = self.fixed_s1 * self.cal_yaw_p * (self.fixed_s1/self.s1[5])
+                            else:
+                                self.fixed_s1 = self.fixed_s1 * self.cal_yaw_p
                         else:
-                            self.fixed_s1 = self.fixed_s1 * self.cal_yaw_n
+                            if max_angle == 7.0:
+                                self.fixed_s1 = self.fixed_s1 * self.cal_yaw_n * (self.fixed_s1/self.s1[3])
+                            else:
+                                self.fixed_s1 = self.fixed_s1 * self.cal_yaw_n * (self.fixed_s1 / self.s1[3])
 
                         if self.fixed_s2 >= 0:
-                            self.fixed_s2 = self.fixed_s2 * self.cal_pitch_p
+                            if max_angle == 7.0:
+                                self.fixed_s2 = self.fixed_s2 * self.cal_pitch_p * (self.fixed_s2/self.s2[7])
+                            else:
+                                self.fixed_s2 = self.fixed_s2 * self.cal_pitch_p
                         else:
-                            self.fixed_s2 = self.fixed_s2 * self.cal_pitch_n
+                            if max_angle == 7.0:
+                                self.fixed_s2 = self.fixed_s2 * self.cal_pitch_n * (self.fixed_s2/self.s2[1])
+                            else:
+                                self.fixed_s2 = self.fixed_s2 * self.cal_pitch_n
 
                     if not self.calibration:
                         self.measure_angle = math.degrees(math.atan2(self.fixed_s2, self.fixed_s1))
@@ -318,15 +331,15 @@ class SerialApp:
 
     def cal_pitch(self):
         if not self.s2[1] == 0:
-            self.cal_pitch_n = -7/self.s2[1]
+            self.cal_pitch_n = -max_angle/self.s2[1]
         if not self.s2[7] == 0:
-            self.cal_pitch_p = 7/self.s2[7]
+            self.cal_pitch_p = max_angle/self.s2[7]
 
     def cal_yaw(self):
         if not self.s1[3] == 0:
-            self.cal_yaw_n = -7/self.s1[3]
+            self.cal_yaw_n = -max_angle/self.s1[3]
         if not self.s1[5] == 0:
-            self.cal_yaw_p = 7/self.s1[5]
+            self.cal_yaw_p = max_angle/self.s1[5]
 
 
 
