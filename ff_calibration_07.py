@@ -101,7 +101,7 @@ class SerialApp:
         self.calibration_button.pack(pady=10)
         self.calibration_button.place(x=10, y=380)
 
-        button_place = [[670, 285],[470, 470],[920, 285],[1050, 470],[785, 670],[750, 285],[550, 470],[1000, 285],[1130, 470],[865, 670]]
+        button_place = [[670, 280],[470, 470],[920, 280],[1050, 470],[785, 690],[750, 280],[550, 470],[1000, 280],[1130, 470],[865, 690]]
         button_font_2 = ("Arial", 12)
 
         for i in range(10):
@@ -122,7 +122,17 @@ class SerialApp:
             else:
                 frame = tk.LabelFrame(master, bg=frame_color[2], text="")
             frame.pack()
-            frame.place(x=button_place[i][0], y=button_place[i][1]-120, width=80, height=120)
+            frame.place(x=button_place[i][0], y=button_place[i][1]-120, width=80, height=125)
+
+        set_label_font = ("Arial", 10)
+        for i in range(10):
+            x, y = button_place[i][0]+5, button_place[i][1]-5
+            self.value_d_labels.append(self.create_label(master, "d:0.0", x, y-104, set_label_font, font_color))
+            self.value_s1_labels.append(self.create_label(master, "Y:0.0", x, y-78, set_label_font, font_color))
+            self.value_s2_labels.append(self.create_label(master, "P:0.0", x, y-52, set_label_font, font_color))
+            self.value_angle_labels.append(self.create_label(master, "θ:0.0", x, y-26, set_label_font, font_color))
+
+
 
 
         # ラベルの定義
@@ -273,6 +283,11 @@ class SerialApp:
         self.s2[idx] = self.fixed_s2
         self.angle[idx] = self.measure_angle
 
+        self.value_d_labels[idx].config(text=f"d:{self.d[idx]:.2f}")
+        self.value_s1_labels[idx].config(text=f"Y:{self.s1[idx]:.2f}")
+        self.value_s2_labels[idx].config(text=f"P:{self.s2[idx]:.2f}")
+        self.value_angle_labels[idx].config(text=f"θ:{self.angle[idx]:.2f}")
+
 
     def calibration_command(self):
         if not self.calibration:
@@ -323,6 +338,11 @@ class SerialApp:
         self.cal_z = self.d[7] - self.d[2]
 
 
+    def create_label(self, master,text, x, y, font, color):
+        label = tk.Label(master, text=text, font=font, foreground=color)
+        label.pack()
+        label.place(x=x, y=y)
+        return label
 
     def update_gui_d(self, text):
         self.data_label_d.config(text=text)
@@ -341,9 +361,6 @@ class SerialApp:
 
     def update_gui_binary_s2(self, text):
         self.binary_label_s2.config(text=text)
-
-
-
 
     def get_com_ports(self):
         ports = serial.tools.list_ports.comports()
