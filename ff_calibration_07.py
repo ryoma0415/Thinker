@@ -101,8 +101,8 @@ class SerialApp:
         self.calibration_button.pack(pady=10)
         self.calibration_button.place(x=10, y=380)
 
-        button_place = [[670, 285],[500, 470],[920, 285],[1050, 470],[800, 680],[750, 285],[550, 470],[1000, 285],[1100, 470],[850, 680]]
-        button_font_2 = ("Arial", 10)
+        button_place = [[670, 285],[470, 470],[920, 285],[1050, 470],[785, 670],[750, 285],[550, 470],[1000, 285],[1130, 470],[865, 670]]
+        button_font_2 = ("Arial", 12)
 
         for i in range(10):
             button = tk.Button(master, text="計測開始", font=button_font_2, command=lambda idx=i: self.get_sensor_command(idx))
