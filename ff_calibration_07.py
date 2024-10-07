@@ -101,21 +101,18 @@ class SerialApp:
         self.calibration_button.pack(pady=10)
         self.calibration_button.place(x=10, y=380)
 
-        button_place = [[680, 285],[500, 470],[920, 285],[1050, 470],[800, 680],[750, 285],[550, 470],[990, 285],[1100, 470],[850, 680]]
-        button_font_2 = ("Arial", 14)
-
+        button_place = [[670, 285],[500, 470],[920, 285],[1050, 470],[800, 680],[750, 285],[550, 470],[1000, 285],[1100, 470],[850, 680]]
+        button_font_2 = ("Arial", 10)
 
         for i in range(10):
             button = tk.Button(master, text="計測開始", font=button_font_2, command=lambda idx=i: self.get_sensor_command(idx))
-            button.pack(pady=10)
+            button.pack(pady=5)
             button.place(x=button_place[i][0], y=button_place[i][1])
-
-
 
 
         label_font = ("Arial", 18)
         font_color = '#000000'
-        frame_color = ["#0000FF", "#FFFF00", "#00FF00"]
+        frame_color = ["#ADD8E6", "#FFFFE0", "#90EE90"]
 
         for i in range(10):
             if i in (0,4,5,9):
@@ -125,13 +122,7 @@ class SerialApp:
             else:
                 frame = tk.LabelFrame(master, bg=frame_color[2], text="")
             frame.pack()
-            frame.place(x=button_place[i][0], y=button_place[i][0]-10, width=60, heigth=100)
-            
-
-
-
-
-
+            frame.place(x=button_place[i][0], y=button_place[i][1]-120, width=80, height=120)
 
 
         # ラベルの定義
@@ -170,8 +161,6 @@ class SerialApp:
 
         # Thread for handling the measurement loop
         self.thread = None
-
-
 
 
     def measurement_loop(self):
@@ -251,8 +240,6 @@ class SerialApp:
                 break
 
 
-
-
     def toggle_measurement(self):
         if not self.measuring:
             self.measuring = True
@@ -290,14 +277,14 @@ class SerialApp:
     def calibration_command(self):
         if not self.calibration:
             self.calibration = True
-            self.calibration_button.config(text="キャリブレーション停止")
+            self.calibration_button.config(text="キャリブレーション OFF")
             self.cal_pitch()
             self.cal_yaw()
             self.cal_d()
 
         else:
             self.calibration = False
-            self.calibration_button.config(text="キャリブレーション開始")
+            self.calibration_button.config(text="キャリブレーション ON")
             self.cal_pitch_p = 1.0
             self.cal_pitch_n = 1.0
             self.cal_yaw_p = 1.0
