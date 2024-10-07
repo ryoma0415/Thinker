@@ -95,17 +95,18 @@ class SerialApp:
 
         self.send_offset_button = tk.Button(master, text="原点調整 押し込み", font=button_font, command=self.send_offset_b_command)
         self.send_offset_button.pack(pady=10)
-        self.send_offset_button.place(x=10, y=300)
+        self.send_offset_button.place(x=10, y=320)
 
         self.calibration_button = tk.Button(master, text="キャリブレーション ON", font=button_font, command=self.calibration_command)
         self.calibration_button.pack(pady=10)
-        self.calibration_button.place(x=10, y=340)
+        self.calibration_button.place(x=10, y=360)
 
         button_place = [[700, 280],[500, 470],[920, 280],[1050, 470],[800, 680],[750, 280],[550, 470],[970, 280],[1100, 470],[850, 680]]
+        button_font_2 = ("Arial", 14)
 
 
         for i in range(10):
-            button = tk.Button(master, text="計測開始", font=button_font, command=lambda idx=i: self.get_sensor_command(idx))
+            button = tk.Button(master, text="計測開始", font=button_font_2, command=lambda idx=i: self.get_sensor_command(idx))
             button.pack(pady=10)
             button.place(x=button_place[i][0], y=button_place[i][1])
 
@@ -114,6 +115,23 @@ class SerialApp:
 
         label_font = ("Arial", 18)
         font_color = '#000000'
+        frame_color = ["#000FF", "#FFFF00", "#00FF00"]
+
+        for i in range(10):
+            if i in (0,4,5,9):
+                frame = tk.LabelFrame(master, bg=frame_color[0], text="")
+            elif i in (1,3,6,8):
+                frame = tk.LabelFrame(master, bg=frame_color[1], text="")
+            else:
+                frame = tk.LabelFrame(master, bg=frame_color[2], text="")
+            frame.pack()
+            frame.place(x=button_place[i][0], y=button_place[i][0]-10)
+
+
+
+
+
+
 
         # ラベルの定義
         self.binary_label_d = tk.Label(master, text="d  Binary : 255", font=label_font, foreground=font_color)
@@ -134,11 +152,11 @@ class SerialApp:
 
         self.data_label_s1 = tk.Label(master, text="角度 : ", font=label_font, foreground=font_color)
         self.data_label_s1.pack(pady=5)
-        self.data_label_s1.place(x=10, y=180)
+        self.data_label_s1.place(x=180, y=180)
 
         self.data_label_s2 = tk.Label(master, text="角度 : ", font=label_font, foreground=font_color)
         self.data_label_s2.pack(pady=5)
-        self.data_label_s2.place(x=10, y=210)
+        self.data_label_s2.place(x=180, y=210)
 
 
         # Initialize serial port
@@ -380,18 +398,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
