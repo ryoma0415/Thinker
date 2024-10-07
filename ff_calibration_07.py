@@ -99,9 +99,9 @@ class SerialApp:
 
         self.calibration_button = tk.Button(master, text="キャリブレーション ON", font=button_font, command=self.calibration_command)
         self.calibration_button.pack(pady=10)
-        self.calibration_button.place(x=10, y=360)
+        self.calibration_button.place(x=10, y=380)
 
-        button_place = [[700, 280],[500, 470],[920, 280],[1050, 470],[800, 680],[750, 280],[550, 470],[970, 280],[1100, 470],[850, 680]]
+        button_place = [[680, 285],[500, 470],[920, 285],[1050, 470],[800, 680],[750, 285],[550, 470],[990, 285],[1100, 470],[850, 680]]
         button_font_2 = ("Arial", 14)
 
 
@@ -115,7 +115,7 @@ class SerialApp:
 
         label_font = ("Arial", 18)
         font_color = '#000000'
-        frame_color = ["#000FF", "#FFFF00", "#00FF00"]
+        frame_color = ["#0000FF", "#FFFF00", "#00FF00"]
 
         for i in range(10):
             if i in (0,4,5,9):
@@ -125,7 +125,8 @@ class SerialApp:
             else:
                 frame = tk.LabelFrame(master, bg=frame_color[2], text="")
             frame.pack()
-            frame.place(x=button_place[i][0], y=button_place[i][0]-10)
+            frame.place(x=button_place[i][0], y=button_place[i][0]-10, width=60, heigth=100)
+            
 
 
 
@@ -140,7 +141,7 @@ class SerialApp:
 
         self.binary_label_s1 = tk.Label(master, text="Y  Binary : 255", font=label_font, foreground=font_color)
         self.binary_label_s1.pack(pady=5)
-        self.binary_label_s1.place(x=10, y=180)
+        self.binary_label_s1.place(x=10, y=165)
 
         self.binary_label_s2 = tk.Label(master, text="P  Binary : 255", font=label_font, foreground=font_color)
         self.binary_label_s2.pack(pady=5)
@@ -152,7 +153,7 @@ class SerialApp:
 
         self.data_label_s1 = tk.Label(master, text="角度 : ", font=label_font, foreground=font_color)
         self.data_label_s1.pack(pady=5)
-        self.data_label_s1.place(x=180, y=180)
+        self.data_label_s1.place(x=180, y=165)
 
         self.data_label_s2 = tk.Label(master, text="角度 : ", font=label_font, foreground=font_color)
         self.data_label_s2.pack(pady=5)
