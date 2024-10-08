@@ -5,6 +5,7 @@ import threading
 from PIL import Image, ImageTk
 from tkinter import ttk, messagebox
 import serial.tools.list_ports
+import pickle
 
 max_angle = 7.0
 
@@ -69,7 +70,7 @@ class SerialApp:
 
         # COMポート選択のプルダウンメニュー
         self.com_port_var = tk.StringVar()
-        self.com_ports = self.get_com_ports()
+        self.com_ports = self.get_com_ports
         self.com_port_menu = ttk.Combobox(master, textvariable=self.com_port_var, values=self.com_ports)
         self.com_port_menu.pack(pady=20)
         self.com_port_menu.place(x=120, y=12)
@@ -101,6 +102,8 @@ class SerialApp:
         self.calibration_button.pack(pady=10)
         self.calibration_button.place(x=10, y=380)
 
+
+        # キャリブレーション用の計測ボタン作成
         button_place = [[670, 280],[470, 470],[920, 280],[1050, 470],[785, 690],[750, 280],[550, 470],[1000, 280],[1130, 470],[865, 690]]
         button_font_2 = ("Arial", 12)
 
@@ -109,7 +112,7 @@ class SerialApp:
             button.pack(pady=5)
             button.place(x=button_place[i][0], y=button_place[i][1])
 
-
+        # キャリブレーション用測定値のフレームと値
         label_font = ("Arial", 18)
         font_color = '#000000'
         frame_color = ["#ADD8E6", "#FFFFE0", "#90EE90"]
@@ -132,9 +135,6 @@ class SerialApp:
             self.value_s2_labels.append(self.create_label(master, "P:0.0", x, y-52, set_label_font, font_color))
             self.value_angle_labels.append(self.create_label(master, "θ:0.0", x, y-26, set_label_font, font_color))
 
-
-
-
         # ラベルの定義
         self.binary_label_d = tk.Label(master, text="d  Binary : 255", font=label_font, foreground=font_color)
         self.binary_label_d.pack(pady=5)
@@ -148,18 +148,17 @@ class SerialApp:
         self.binary_label_s2.pack(pady=5)
         self.binary_label_s2.place(x=10, y=210)
 
-        self.data_label_d = tk.Label(master, text="距離 : ", font=label_font, foreground=font_color)
+        self.data_label_d = tk.Label(master, text="距離 : 0.0 mm", font=label_font, foreground=font_color)
         self.data_label_d.pack(pady=5)
         self.data_label_d.place(x=180, y=120)
 
-        self.data_label_s1 = tk.Label(master, text="角度 : ", font=label_font, foreground=font_color)
+        self.data_label_s1 = tk.Label(master, text="角度 : 0.0 deg", font=label_font, foreground=font_color)
         self.data_label_s1.pack(pady=5)
         self.data_label_s1.place(x=180, y=165)
 
-        self.data_label_s2 = tk.Label(master, text="角度 : ", font=label_font, foreground=font_color)
+        self.data_label_s2 = tk.Label(master, text="角度 : 0.0 deg", font=label_font, foreground=font_color)
         self.data_label_s2.pack(pady=5)
         self.data_label_s2.place(x=180, y=210)
-
 
         # Initialize serial port
         self.ser = serial.Serial()
@@ -233,17 +232,17 @@ class SerialApp:
                         self.update_gui_binary_d(f"d  Binary : {int(response[2])}")
                         self.update_gui_binary_s1(f"Y  Binary : {int(response[3])}")
                         self.update_gui_binary_s2(f"P  Binary : {int(response[4])}")
-                        self.update_gui_d(f"距離 : {self.fixed_d}")
-                        self.update_gui_s1(f"角度 : {self.fixed_s1}")
-                        self.update_gui_s2(f"角度 : {self.fixed_s2}")
+                        self.update_gui_d(f"距離 : {self.fixed_d:04.1f} mm")
+                        self.update_gui_s1(f"角度 : {self.fixed_s1:04.1f} deg")
+                        self.update_gui_s2(f"角度 : {self.fixed_s2:04.1f} deg")
                     else:
                         self.measure_angle = math.degrees(math.atan2(self.fixed_s2, self.fixed_s1))
                         self.update_gui_binary_d(f"d  Binary : {int(response[2])}")
                         self.update_gui_binary_s1(f"Y  Binary : {int(response[3])}")
                         self.update_gui_binary_s2(f"P  Binary : {int(response[4])}")
-                        self.update_gui_d(f"距離 : {self.fixed_d}")
-                        self.update_gui_s1(f"角度 : {self.fixed_s1}")
-                        self.update_gui_s2(f"角度 : {self.fixed_s2}")
+                        self.update_gui_d(f"距離 : {self.fixed_d:04.1f} mm")
+                        self.update_gui_s1(f"角度 : {self.fixed_s1:04.1f} deg")
+                        self.update_gui_s2(f"角度 : {self.fixed_s2:04.1f} deg")
 
             except Exception as e:
                 self.update_gui_d(f"エラー: {e}")
@@ -254,7 +253,7 @@ class SerialApp:
         if not self.measuring:
             self.measuring = True
             self.start_button.config(text="計測停止")
-            self.thread = threading.Thread(target=self.measurement_loop())
+            self.thread = threading.Thread(target=self.measurement_loop)
             self.thread.daemon = True
             self.thread.start()
         else:
@@ -277,6 +276,12 @@ class SerialApp:
         self.s2 = [0.0] * 10
         self.angle = [0.0] * 10
 
+        for i in range(10):
+            self.value_d_labels[i].config(text="d:0.0")
+            self.value_s1_labels[i].config(text="Y:0.0")
+            self.value_s2_labels[i].config(text="P:0.0")
+            self.value_angle_labels[i].config(text="θ:0.0")
+
     def get_sensor_command(self, idx):
         self.d[idx] = self.fixed_d
         self.s1[idx] = self.fixed_s1
@@ -296,6 +301,11 @@ class SerialApp:
             self.cal_pitch()
             self.cal_yaw()
             self.cal_d()
+            with open('TK-01_Calibration.pkl', 'wb') as f:
+                pickle.dump([self.cal_pitch_n, self.cal_pitch_p, self.cal_delta_pitch_n, self.cal_delta_pitch_p,
+                             self.cal_yaw_n, self.cal_yaw_p, self.cal_delta_yaw_n, self.cal_delta_yaw_p, self.cal_z,
+                             self.offset_a_d, self.offset_b_d, self.offset_a_s1, self.offset_b_s1,
+                             self.offset_a_s2, self.offset_b_s2], f)
 
         else:
             self.calibration = False
