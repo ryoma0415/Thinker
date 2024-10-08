@@ -202,7 +202,7 @@ class SerialApp:
                     self.fixed_s2 = (self.measure_s2 - self.offset_a_s2) - error_gain * self.offset_b_s2
 
 
-                    if self.calibration:
+                    if self.calibration and self.cal_z != 0:
                         # ヨー軸キャリブレーション処理
                         if self.fixed_s1 >= 0:
                             self.cal_yaw_p_z = (self.cal_delta_yaw_p / self.cal_z) * self.fixed_d + self.cal_yaw_p[0] # ゲイン計算
@@ -293,8 +293,8 @@ class SerialApp:
             self.cal_yaw()
             self.cal_d()
             with open('TK-01_Calibration.pkl', 'wb') as f:
-                pickle.dump([self.cal_pitch_n[0], self.cal_pitch_n[1], self.cal_pitch_p[0], self.cal_pitch_p[1], self.cal_delta_pitch_n, self.cal_delta_pitch_p,
-                             self.cal_yaw_n[0], self.cal_yaw_n[1], self.cal_yaw_p[0], self.cal_yaw_p[1], self.cal_delta_yaw_n, self.cal_delta_yaw_p, self.cal_z,
+                pickle.dump([self.cal_pitch_n, self.cal_pitch_p, self.cal_delta_pitch_n, self.cal_delta_pitch_p,
+                             self.cal_yaw_n, self.cal_yaw_p, self.cal_delta_yaw_n, self.cal_delta_yaw_p, self.cal_z,
                              self.offset_a_d, self.offset_b_d, self.offset_a_s1, self.offset_b_s1,
                              self.offset_a_s2, self.offset_b_s2], f)
 
