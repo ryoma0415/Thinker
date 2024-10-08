@@ -7,7 +7,7 @@ from tkinter import ttk, messagebox
 import serial.tools.list_ports
 import pickle
 
-max_angle = 7.0
+max_angle = 3.5
 
 class SerialApp:
     def __init__(self, master):
@@ -40,6 +40,7 @@ class SerialApp:
         self.cal_yaw_n = [1.0, 1.0]
         self.cal_pitch_p = [1.0, 1.0]
         self.cal_pitch_n = [1.0, 1.0]
+        self.cal_z = 1.0
 
         self.d = [0.0] * 10
         self.s1 = [0.0] * 10
@@ -102,9 +103,9 @@ class SerialApp:
         self.calibration_button.pack(pady=10)
         self.calibration_button.place(x=10, y=380)
 
-        self.calibration_load_button = tk.Button(master, text="キャリブレーションファイル　読み込み", font=button_font, command=self.load_calibration)
-        self.calibration_load_button.pack(pady=10)
-        self.calibration_load_button.place(x=10, y=440)
+        # self.calibration_load_button = tk.Button(master, text="キャリブレーションファイル　読み込み", font=button_font, command=self.load_calibration)
+        # self.calibration_load_button.pack(pady=10)
+        # self.calibration_load_button.place(x=10, y=440)
 
 
         # キャリブレーション用の計測ボタン作成
@@ -202,7 +203,7 @@ class SerialApp:
                     self.fixed_s2 = (self.measure_s2 - self.offset_a_s2) - error_gain * self.offset_b_s2
 
 
-                    if self.calibration and self.cal_z != 0:
+                    if self.calibration:
                         # ヨー軸キャリブレーション処理
                         if self.fixed_s1 >= 0:
                             self.cal_yaw_p_z = (self.cal_delta_yaw_p / self.cal_z) * self.fixed_d + self.cal_yaw_p[0] # ゲイン計算
@@ -286,7 +287,7 @@ class SerialApp:
 
 
     def calibration_command(self):
-        if not self.calibration and not self.calibration_data:
+        if not self.calibration:
             self.calibration = True
             self.calibration_button.config(text="キャリブレーション OFF")
             self.cal_pitch()
@@ -297,10 +298,6 @@ class SerialApp:
                              self.cal_yaw_n, self.cal_yaw_p, self.cal_delta_yaw_n, self.cal_delta_yaw_p, self.cal_z,
                              self.offset_a_d, self.offset_b_d, self.offset_a_s1, self.offset_b_s1,
                              self.offset_a_s2, self.offset_b_s2], f)
-
-        elif not self.calibration and self.calibration_data:
-            self.calibration = True
-            self.calibration_button.config(text="キャリブレーション OFF")
 
         else:
             self.calibration = False
@@ -380,31 +377,31 @@ class SerialApp:
             messagebox.showerror("Error", f"Failed to open serial port: {e}")
             self.start_button.config(state='disabled')
 
-    def load_calibration(self):
-        try:
-            with open('TK-01_Calibration.pkl', 'rb') as f:
-                self.calibration_data = pickle.load(f)
-        except FileNotFoundError:
-            messagebox.showerror("Error", "Calibration file not found.")
-        except Exception as e:
-            messagebox.showerror("Error", f"Failed to load calibration file: {e}")
-
-        if self.calibration_data:
-            self.cal_pitch_n = self.calibration_data[0]
-            self.cal_pitch_p = self.calibration_data[1]
-            self.cal_delta_pitch_n = self.calibration_data[2]
-            self.cal_delta_pitch_p = self.calibration_data[3]
-            self.cal_yaw_n = self.calibration_data[4]
-            self.cal_yaw_p = self.calibration_data[5]
-            self.cal_delta_yaw_n = self.calibration_data[6]
-            self.cal_delta_yaw_p = self.calibration_data[7]
-            self.cal_z = self.calibration_data[8]
-            self.offset_a_d = self.calibration_data[9]
-            self.offset_b_d = self.calibration_data[10]
-            self.offset_a_s1 = self.calibration_data[11]
-            self.offset_b_s1 = self.calibration_data[12]
-            self.offset_a_s2 = self.calibration_data[13]
-            self.offset_b_s2 = self.calibration_data[14]
+    # def load_calibration(self):
+    #     try:
+    #         with open('TK-01_Calibration.pkl', 'rb') as f:
+    #             self.calibration_data = pickle.load(f)
+    #     except FileNotFoundError:
+    #         messagebox.showerror("Error", "Calibration file not found.")
+    #     except Exception as e:
+    #         messagebox.showerror("Error", f"Failed to load calibration file: {e}")
+    #
+    #     if self.calibration_data:
+    #         self.cal_pitch_n = self.calibration_data[0]
+    #         self.cal_pitch_p = self.calibration_data[1]
+    #         self.cal_delta_pitch_n = self.calibration_data[2]
+    #         self.cal_delta_pitch_p = self.calibration_data[3]
+    #         self.cal_yaw_n = self.calibration_data[4]
+    #         self.cal_yaw_p = self.calibration_data[5]
+    #         self.cal_delta_yaw_n = self.calibration_data[6]
+    #         self.cal_delta_yaw_p = self.calibration_data[7]
+    #         self.cal_z = self.calibration_data[8]
+    #         self.offset_a_d = self.calibration_data[9]
+    #         self.offset_b_d = self.calibration_data[10]
+    #         self.offset_a_s1 = self.calibration_data[11]
+    #         self.offset_b_s1 = self.calibration_data[12]
+    #         self.offset_a_s2 = self.calibration_data[13]
+    #         self.offset_b_s2 = self.calibration_data[14]
 
 
     def on_closing(self):
