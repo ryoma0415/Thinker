@@ -304,8 +304,8 @@ class SerialApp:
             self.cal_yaw()
             self.cal_d()
             with open('TK-01_Calibration.pkl', 'wb') as f:
-                pickle.dump([self.cal_pitch_n, self.cal_pitch_p, self.cal_delta_pitch_n, self.cal_delta_pitch_p,
-                             self.cal_yaw_n, self.cal_yaw_p, self.cal_delta_yaw_n, self.cal_delta_yaw_p, self.cal_z,
+                pickle.dump([self.cal_pitch_n[0], self.cal_pitch_n[1], self.cal_pitch_p[0], self.cal_pitch_p[1], self.cal_delta_pitch_n, self.cal_delta_pitch_p,
+                             self.cal_yaw_n[0], self.cal_yaw_n[1], self.cal_yaw_p[0], self.cal_yaw_p[1], self.cal_delta_yaw_n, self.cal_delta_yaw_p, self.cal_z,
                              self.offset_a_d, self.offset_b_d, self.offset_a_s1, self.offset_b_s1,
                              self.offset_a_s2, self.offset_b_s2], f)
 
@@ -401,21 +401,21 @@ class SerialApp:
             messagebox.showerror("Error", f"Failed to load calibration file: {e}")
 
         if self.calibration_data:
-            cal_pitch_n = self.calibration_data[0]
-            cal_pitch_p = self.calibration_data[1]
-            cal_delta_pitch_n = self.calibration_data[2]
-            cal_delta_pitch_p = self.calibration_data[3]
-            cal_yaw_n = self.calibration_data[4]
-            cal_yaw_p = self.calibration_data[5]
-            cal_delta_yaw_n = self.calibration_data[6]
-            cal_delta_yaw_p = self.calibration_data[7]
-            cal_z = self.calibration_data[8]
-            offset_a_d = self.calibration_data[9]
-            offset_b_d = self.calibration_data[10]
-            offset_a_s1 = self.calibration_data[11]
-            offset_b_s1 = self.calibration_data[12]
-            offset_a_s2 = self.calibration_data[13]
-            offset_b_s2 = self.calibration_data[14]
+            self.cal_pitch_n = self.calibration_data[0]
+            self.cal_pitch_p = self.calibration_data[1]
+            self.cal_delta_pitch_n = self.calibration_data[2]
+            self.cal_delta_pitch_p = self.calibration_data[3]
+            self.cal_yaw_n = self.calibration_data[4]
+            self.cal_yaw_p = self.calibration_data[5]
+            self.cal_delta_yaw_n = self.calibration_data[6]
+            self.cal_delta_yaw_p = self.calibration_data[7]
+            self.cal_z = self.calibration_data[8]
+            self.offset_a_d = self.calibration_data[9]
+            self.offset_b_d = self.calibration_data[10]
+            self.offset_a_s1 = self.calibration_data[11]
+            self.offset_b_s1 = self.calibration_data[12]
+            self.offset_a_s2 = self.calibration_data[13]
+            self.offset_b_s2 = self.calibration_data[14]
 
 
     def on_closing(self):
