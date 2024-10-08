@@ -297,7 +297,7 @@ class SerialApp:
 
 
     def calibration_command(self):
-        if not self.calibration:
+        if not self.calibration and not self.calibration_data:
             self.calibration = True
             self.calibration_button.config(text="キャリブレーション OFF")
             self.cal_pitch()
@@ -308,6 +308,10 @@ class SerialApp:
                              self.cal_yaw_n, self.cal_yaw_p, self.cal_delta_yaw_n, self.cal_delta_yaw_p, self.cal_z,
                              self.offset_a_d, self.offset_b_d, self.offset_a_s1, self.offset_b_s1,
                              self.offset_a_s2, self.offset_b_s2], f)
+
+        elif not self.calibration and self.calibration_data:
+            self.calibration = True
+            self.calibration_button.config(text="キャリブレーション OFF")
 
         else:
             self.calibration = False
