@@ -228,23 +228,12 @@ class SerialApp:
                         elif self.fixed_s2 <= -max_angle:
                             self.fixed_s2 = -max_angle
 
-
-                    if not self.calibration:
-                        self.measure_angle = math.degrees(math.atan2(self.fixed_s2, self.fixed_s1))
-                        self.update_gui_binary_d(f"d  Binary : {int(response[2])}")
-                        self.update_gui_binary_s1(f"Y  Binary : {int(response[3])}")
-                        self.update_gui_binary_s2(f"P  Binary : {int(response[4])}")
-                        self.update_gui_d(f"距離 : {self.fixed_d:04.1f} mm")
-                        self.update_gui_s1(f"角度 : {self.fixed_s1:04.1f} deg")
-                        self.update_gui_s2(f"角度 : {self.fixed_s2:04.1f} deg")
-                    else:
-                        self.measure_angle = math.degrees(math.atan2(self.fixed_s2, self.fixed_s1))
-                        self.update_gui_binary_d(f"d  Binary : {int(response[2])}")
-                        self.update_gui_binary_s1(f"Y  Binary : {int(response[3])}")
-                        self.update_gui_binary_s2(f"P  Binary : {int(response[4])}")
-                        self.update_gui_d(f"距離 : {self.fixed_d:04.1f} mm")
-                        self.update_gui_s1(f"角度 : {self.fixed_s1:04.1f} deg")
-                        self.update_gui_s2(f"角度 : {self.fixed_s2:04.1f} deg")
+                    self.update_gui_binary_d(f"d  Binary : {int(response[2])}")
+                    self.update_gui_binary_s1(f"Y  Binary : {int(response[3])}")
+                    self.update_gui_binary_s2(f"P  Binary : {int(response[4])}")
+                    self.update_gui_d(f"距離 : {self.fixed_d:04.1f} mm")
+                    self.update_gui_s1(f"角度 : {self.fixed_s1:04.1f} deg")
+                    self.update_gui_s2(f"角度 : {self.fixed_s2:04.1f} deg")
 
             except Exception as e:
                 self.update_gui_d(f"エラー: {e}")
@@ -288,7 +277,7 @@ class SerialApp:
         self.d[idx] = self.fixed_d
         self.s1[idx] = self.fixed_s1
         self.s2[idx] = self.fixed_s2
-        self.angle[idx] = self.measure_angle
+        self.angle[idx] = math.atan2(self.s1[idx], self.s2[idx])
 
         self.value_d_labels[idx].config(text=f"d:{self.d[idx]:.2f}")
         self.value_s1_labels[idx].config(text=f"Y:{self.s1[idx]:.2f}")
